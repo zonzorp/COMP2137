@@ -1,0 +1,6 @@
+inventory-config:
+  ssh:
+    user: remoteadmin
+    host-key-check: false
+    private-key: ~/.ssh/id_ed25519
+EOF
