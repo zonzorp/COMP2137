@@ -2,8 +2,8 @@
 # script block used to conveniently capture all output from script
 {
 export PAGER=more
-checkscript=https://zonzorp.github.io/COMP2137/check-assign2-script.sh
-makecontainers=https://zonzorp.github.io/COMP2137/makecontainers.sh
+checkscript=https://github.com/zonzorp/COMP2137/raw/main/check-assign2-script.sh
+makecontainers=https://github.com/zonzorp/COMP2137/raw/main/makecontainers.sh
 
 function userimpatient {
 echo "please let the script finish"
