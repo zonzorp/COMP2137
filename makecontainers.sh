@@ -184,7 +184,7 @@ echo "This script performs many tasks. Please be patient"
 echo "To see more about what it is doing as it does it, use the --verbose option"
 echo "You may ignore any messages about Open vSwitch or dpkg-preconfigure being unable to re-open stdin"
 echo "DO NOT use control-Z when this script is running."
-      
+
 # init incus if no incusbr0 exists yet, else get rid of old containers if fresh is requested
 if ! ip a s incusbr0 >&/dev/null; then
   echoverbose "Initializing incus"
@@ -239,7 +239,7 @@ if ! incus info openwrt >&/dev/null ; then
     fi
     incus network attach $lanintf openwrt eth1
     incus network attach $mgmtintf openwrt eth2
-    
+
     incus exec openwrt -- sh -c "echo '
 config device
     option name eth1
@@ -249,7 +249,7 @@ config interface lan
     option proto static
     option ipaddr $lannetnum.2
     option netmask 255.255.255.0
-    
+
 config device
     option name eth2
 
@@ -336,9 +336,11 @@ $containermgmtip $container-mgmt
 $lannetnum.2 openwrt
 $mgmtnetnum.2 openwrt-mgmt
 ' >>/etc/hosts"
-    
+
     echoverbose "Installing openssh-server on $container"
     incus exec "$container" -- apt-get -qq install openssh-server >/dev/null
+    incus exec "$container" -- sed -i -e "s/#ListenAddress 0.0.0.0/ListenAddress $containermgmtip/" /etc/ssh/sshd_config
+    incus exec "$container" -- systemctl restart ssh
 
     echoverbose "Setting up SSH keys for $container"
     [ -d ~/.ssh ] || ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -q -N "" >/dev/null
@@ -362,11 +364,11 @@ $mgmtnetnum.2 openwrt-mgmt
     incus restart "$container"
     echo "Waiting for $container restart"
     while [ "$(incus info "$container" | grep '^Status: ')" != "Status: RUNNING" ]; do sleep 2; done
-    
+
     echoverbose "Adding $container to /etc/hosts file if necessary"
     sudo sed -i -e "/ $container\$/d" -e "/ $container-mgmt\$/d" /etc/hosts
     sudo sed -i -e '$a'"$containerlanip $container" -e '$a'"$containermgmtip $container-mgmt" /etc/hosts
-    
+
     if [ "$puppetinstall" = "yes" ]; then
         echoverbose "Adding puppet server to /etc/hosts file if necessary"
         grep -q '[[:space:]]puppet$' /etc/hosts || sudo sed -i -e '$a'"$mgmtnetnum.1 puppet" /etc/hosts
