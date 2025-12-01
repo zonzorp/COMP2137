@@ -302,7 +302,7 @@ for (( n=0;n<numcontainers - numexisting;n++ )); do
     else
       echoverbose "Creating $container"
     fi
-    if ! incus launch images:ubuntu/22.04 "$container" -n $lanintf; then
+    if ! incus launch images:ubuntu/24.04 "$container" -n $lanintf; then
       error-exit "Failed to create $container container!"
     fi
     echoverbose "Configuring $container networking"
@@ -314,7 +314,7 @@ for (( n=0;n<numcontainers - numexisting;n++ )); do
 network:
     version: 2
     ethernets:
-        eth0:
+        eth1:
             addresses: [$containerlanip/24]
             routes:
               - to: default
@@ -322,7 +322,7 @@ network:
             nameservers:
                 addresses: [$lannetnum.2]
                 search: [home.arpa, localdomain]
-        eth1:
+        eth0:
             addresses: [$containermgmtip/24]
 EOF
 "
