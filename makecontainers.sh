@@ -302,11 +302,11 @@ for (( n=0;n<numcontainers - numexisting;n++ )); do
     else
       echoverbose "Creating $container"
     fi
-    if ! incus launch images:ubuntu/24.04 "$container" -n $lanintf; then
+    if ! incus launch images:ubuntu/24.04 "$container" -n $mgmtintf; then
       error-exit "Failed to create $container container!"
     fi
     echoverbose "Configuring $container networking"
-    incus network attach $mgmtintf "$container" eth1
+    incus network attach $lanintf "$container" eth1
     echoverbose "Waiting for $container to complete startup"
     while [ "$(incus info "$container" | grep '^Status: ')" != "Status: RUNNING" ]; do sleep 2; done
     netplanfile=$(incus exec "$container" ls /etc/netplan)
