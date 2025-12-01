@@ -338,7 +338,7 @@ $mgmtnetnum.2 openwrt-mgmt
 ' >>/etc/hosts"
 
     echoverbose "Installing openssh-server on $container"
-    incus exec "$container" -- apt-get -qq install openssh-server 2>&1 >/dev/null
+    incus exec "$container" -- apt-get -qq install openssh-server >/dev/null
     incus exec "$container" -- sed -i -e "s/#ListenAddress 0.0.0.0/ListenAddress $containermgmtip/" /etc/ssh/sshd_config
     incus exec "$container" -- systemctl restart ssh
 
