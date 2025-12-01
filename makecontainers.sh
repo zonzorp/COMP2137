@@ -314,6 +314,8 @@ for (( n=0;n<numcontainers - numexisting;n++ )); do
 network:
     version: 2
     ethernets:
+        eth0:
+            addresses: [$containermgmtip/24]
         eth1:
             addresses: [$containerlanip/24]
             routes:
@@ -322,8 +324,6 @@ network:
             nameservers:
                 addresses: [$lannetnum.2]
                 search: [home.arpa, localdomain]
-        eth0:
-            addresses: [$containermgmtip/24]
 EOF
 "
     incus exec "$container" -- bash -c '[ -d /etc/cloud ] && echo "network: {config: disabled}" > /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg'
@@ -338,7 +338,7 @@ $mgmtnetnum.2 openwrt-mgmt
 ' >>/etc/hosts"
 
     echoverbose "Installing openssh-server on $container"
-    incus exec "$container" -- apt-get -qq install openssh-server >/dev/null
+    incus exec "$container" -- apt-get -qq install openssh-server 2>&1 >/dev/null
     incus exec "$container" -- sed -i -e "s/#ListenAddress 0.0.0.0/ListenAddress $containermgmtip/" /etc/ssh/sshd_config
     incus exec "$container" -- systemctl restart ssh
 
