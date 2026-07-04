@@ -234,7 +234,7 @@ sudo sed -i -e '/^incus-bridge /d' -e '$a'"incus-bridge $bridgeintfnetnum"\
 
 ##create the router container if necessary
 if ! incus info openwrt >&/dev/null ; then
-    if ! incus launch images:openwrt/23.05 openwrt -n "$bridgeintf"; then
+    if ! incus launch images:openwrt/25.12 openwrt -n "$bridgeintf"; then
         error-exit "Failed to create openwrt container!"
     fi
     incus network attach $lanintf openwrt eth1
